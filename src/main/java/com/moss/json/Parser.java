@@ -72,25 +72,27 @@ public class Parser {
     public static void importFollows() {
         for (UserName userName : UserName.values()) {
             JsonObject rootJson = getRootJson(userUrl + userName + followsUrl);
-            JsonArray follows = rootJson.get("follows").getAsJsonArray();
-            StringBuilder out = new StringBuilder()
-                    .append("\n\t\t\t\t\t\t" + userName)
-                    .append("\n");
-            printOutputToFile(out, twitchLogFile);
-            for (JsonElement f : follows) {
-                JsonObject follow = f.getAsJsonObject();
-                String createdAt = follow.get("created_at").getAsString();
-                createdAt = formatDate(createdAt);
-                JsonObject followChannel = follow.get("channel").getAsJsonObject();
-                String followChannelName = followChannel.get("name").getAsString();
-                String followChannelNameOutput = formatString(followChannelName);
-                StringBuilder output = new StringBuilder()
-                        .append("\n Follow       : " + followChannelNameOutput)
-                        .append("|    Date       : " + createdAt);
-                printOutputToFile(output, twitchLogFile);
-                checkChatUsers(followChannelName);
+            if (rootJson != null) {
+                JsonArray follows = rootJson.get("follows").getAsJsonArray();
+                StringBuilder out = new StringBuilder()
+                        .append("\n\t\t\t\t\t\t" + userName)
+                        .append("\n");
+                printOutputToFile(out, twitchLogFile);
+                for (JsonElement f : follows) {
+                    JsonObject follow = f.getAsJsonObject();
+                    String createdAt = follow.get("created_at").getAsString();
+                    createdAt = formatDate(createdAt);
+                    JsonObject followChannel = follow.get("channel").getAsJsonObject();
+                    String followChannelName = followChannel.get("name").getAsString();
+                    String followChannelNameOutput = formatString(followChannelName);
+                    StringBuilder output = new StringBuilder()
+                            .append("\n Follow       : " + followChannelNameOutput)
+                            .append("|    Date       : " + createdAt);
+                    printOutputToFile(output, twitchLogFile);
+                    checkChatUsers(followChannelName);
+                }
+                printOutputToFile(printDelimiter(true), twitchLogFile);
             }
-            printOutputToFile(printDelimiter(true), twitchLogFile);
         }
     }
 
