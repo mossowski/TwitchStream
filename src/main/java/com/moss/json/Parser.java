@@ -140,7 +140,10 @@ public class Parser {
             JsonElement root = jsonParser.parse(new InputStreamReader((InputStream) request.getContent()));
             rootJson = root.getAsJsonObject();
         } catch (IOException e) {
-            System.out.println(spec + " URL does not exist!");
+            StringBuilder errorOutput = new StringBuilder()
+                    .append(spec)
+                    .append(" URL does not exist!");
+            printOutputToFile(errorOutput, errorFile);
         }
         return rootJson;
     }
@@ -187,7 +190,9 @@ public class Parser {
                 PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
             printWriter.print(output);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            StringBuilder errorOutput = new StringBuilder()
+                    .append(e.getMessage());
+            printOutputToFile(errorOutput, errorFile);
         }
     }
 

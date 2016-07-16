@@ -6,6 +6,7 @@ public class Settings {
     public final static int viewersLimit = 250;
     public final static String logFile = "log.txt";
     public final static String twitchLogFile = "twitchLog.txt";
+    public final static String errorFile = "error.log";
     public final static int delimiterSize = 75;
 
     public enum UserName {
