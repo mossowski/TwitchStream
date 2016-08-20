@@ -9,6 +9,10 @@ public class Settings {
     public final static String errorFile = "error.log";
     public final static int delimiterSize = 75;
 
+    public final static boolean normalMode = true;
+    public final static boolean errorMode = false;
+    public final static boolean logMode = false;
+
     public enum UserName {
         // users names
     }

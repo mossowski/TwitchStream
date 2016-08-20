@@ -46,7 +46,9 @@ public class Parser {
                     .append("\n created at   : " + createdAt)
                     .append("\n updated at   : " + updatedAt)
                     .append(printDelimiter(true));
-            printOutputToFile(output, twitchLogFile);
+            if (logMode) {
+                printOutputToFile(output, twitchLogFile);
+            }
             printOutputToConsole(output);
         }
     }
@@ -54,17 +56,19 @@ public class Parser {
     // --------------------------------------------------------------------------------------------------------------------
 
     public static void importSummary() {
-        JsonObject rootJson = getRootJson(summaryUrl);
-        int channels = rootJson.get("channels").getAsInt();
-        int viewers = rootJson.get("viewers").getAsInt();
-        StringBuilder output = new StringBuilder()
-                .append(printDelimiter(false))
-                .append(printDate())
-                .append(printDelimiter(false))
-                .append("\n Channels     : " + channels)
-                .append("\n Viewers      : " + viewers)
-                .append(printDelimiter(true));
-        printOutputToFile(output, twitchLogFile);
+        if (logMode) {
+            JsonObject rootJson = getRootJson(summaryUrl);
+            int channels = rootJson.get("channels").getAsInt();
+            int viewers = rootJson.get("viewers").getAsInt();
+            StringBuilder output = new StringBuilder()
+                    .append(printDelimiter(false))
+                    .append(printDate())
+                    .append(printDelimiter(false))
+                    .append("\n Channels     : " + channels)
+                    .append("\n Viewers      : " + viewers)
+                    .append(printDelimiter(true));
+            printOutputToFile(output, twitchLogFile);
+        }
     }
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -74,10 +78,12 @@ public class Parser {
             JsonObject rootJson = getRootJson(userUrl + userName + followsUrl);
             if (rootJson != null) {
                 JsonArray follows = rootJson.get("follows").getAsJsonArray();
-                StringBuilder out = new StringBuilder()
-                        .append("\n\t\t\t\t\t\t" + userName)
-                        .append("\n");
-                printOutputToFile(out, twitchLogFile);
+                if (logMode) {
+                    StringBuilder out = new StringBuilder()
+                            .append("\n\t\t\t\t\t\t" + userName)
+                            .append("\n");
+                    printOutputToFile(out, twitchLogFile);
+                }
                 for (JsonElement f : follows) {
                     JsonObject follow = f.getAsJsonObject();
                     String createdAt = follow.get("created_at").getAsString();
@@ -85,13 +91,17 @@ public class Parser {
                     JsonObject followChannel = follow.get("channel").getAsJsonObject();
                     String followChannelName = followChannel.get("name").getAsString();
                     String followChannelNameOutput = formatString(followChannelName);
-                    StringBuilder output = new StringBuilder()
-                            .append("\n Follow       : " + followChannelNameOutput)
-                            .append("|    Date       : " + createdAt);
-                    printOutputToFile(output, twitchLogFile);
+                    if (logMode) {
+                        StringBuilder output = new StringBuilder()
+                                .append("\n Follow       : " + followChannelNameOutput)
+                                .append("|    Date       : " + createdAt);
+                        printOutputToFile(output, twitchLogFile);
+                    }
                     checkChatUsers(followChannelName);
                 }
-                printOutputToFile(printDelimiter(true), twitchLogFile);
+                if (logMode) {
+                    printOutputToFile(printDelimiter(true), twitchLogFile);
+                }
             }
         }
     }
@@ -99,34 +109,38 @@ public class Parser {
     // --------------------------------------------------------------------------------------------------------------------
 
     public static void importStreams() {
-        int streamsSize = 0;
-        int viewersCount = 0;
-        int offsets = 0;
-        TimeWatch timeWatch = TimeWatch.start();
-        do {
-            JsonObject rootJson = getRootJson(allStreamsUrl + offsets);
-            if (rootJson != null) {
-                JsonArray streams = rootJson.get("streams").getAsJsonArray();
-                streamsSize = streams.size();
-                if (streamsSize > 0) {
-                    for (JsonElement s : streams) {
-                        JsonObject stream = s.getAsJsonObject();
-                        JsonObject channel = stream.get("channel").getAsJsonObject();
-                        viewersCount = stream.get("viewers").getAsInt();
-                        if (viewersCount > viewersLimit) {
-                            String channelName = channel.get("name").getAsString();
-                            checkChatUsers(channelName);
+        if (normalMode) { 
+            int streamsSize = 0;
+            int viewersCount = 0;
+            int offsets = 0;
+            TimeWatch timeWatch = TimeWatch.start();
+            do {
+                JsonObject rootJson = getRootJson(allStreamsUrl + offsets);
+                if (rootJson != null) {
+                    JsonArray streams = rootJson.get("streams").getAsJsonArray();
+                    streamsSize = streams.size();
+                    if (streamsSize > 0) {
+                        for (JsonElement s : streams) {
+                            JsonObject stream = s.getAsJsonObject();
+                            JsonObject channel = stream.get("channel").getAsJsonObject();
+                            viewersCount = stream.get("viewers").getAsInt();
+                            if (viewersCount > viewersLimit) {
+                                String channelName = channel.get("name").getAsString();
+                                checkChatUsers(channelName);
+                            }
                         }
                     }
+                    offsets += 100;
                 }
-                offsets += 100;
+            } while (streamsSize != 0 && viewersCount > viewersLimit);
+            if (logMode) {
+                StringBuilder output = new StringBuilder()
+                        .append("\n Time         : " + formatString(timeWatch.time()))
+                        .append("|    Date       : " + DateWatch.getCurrentDate())
+                        .append(printDelimiter(true));
+                printOutputToFile(output, twitchLogFile);
             }
-        } while (streamsSize != 0 && viewersCount > viewersLimit);
-        StringBuilder output = new StringBuilder()
-                .append("\n Time         : " + formatString(timeWatch.time()))
-                .append("|    Date       : " + DateWatch.getCurrentDate())
-                .append(printDelimiter(true));
-        printOutputToFile(output, twitchLogFile);
+        }
     }
 
     // --------------------------------------------------------------------------------------------------------------------
@@ -140,10 +154,12 @@ public class Parser {
             JsonElement root = jsonParser.parse(new InputStreamReader((InputStream) request.getContent()));
             rootJson = root.getAsJsonObject();
         } catch (IOException e) {
-            StringBuilder errorOutput = new StringBuilder()
-                    .append(spec)
-                    .append(" URL does not exist!");
-            printOutputToFile(errorOutput, errorFile);
+            if (errorMode) {
+                StringBuilder errorOutput = new StringBuilder()
+                        .append(spec)
+                        .append(" URL does not exist!");
+                printOutputToFile(errorOutput, errorFile);
+            }
         }
         return rootJson;
     }
@@ -174,7 +190,9 @@ public class Parser {
                             .append("\n Username     : " + chatViewerOutput)
                             .append("|    Date       : " + date)
                             .append("     Channel    : " + channelName);
-                    printOutputToFile(output, twitchLogFile);
+                    if (logMode) {
+                        printOutputToFile(output, twitchLogFile);
+                    }
                     printOutputToFile(output, logFile);
                     printOutputToConsole(output);
                 }
@@ -190,9 +208,11 @@ public class Parser {
                 PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
             printWriter.print(output);
         } catch (IOException e) {
-            StringBuilder errorOutput = new StringBuilder()
-                    .append(e.getMessage());
-            printOutputToFile(errorOutput, errorFile);
+            if (errorMode) {
+                StringBuilder errorOutput = new StringBuilder()
+                        .append(e.getMessage());
+                printOutputToFile(errorOutput, errorFile);
+            }
         }
     }
 
