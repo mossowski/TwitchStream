@@ -145,6 +145,22 @@ public class Parser {
 
     // --------------------------------------------------------------------------------------------------------------------
 
+    public static void importChannels() {
+        for (ChannelUserName channelUserName : ChannelUserName.values()) {
+            String channel = channelUserName.toString();
+            JsonObject myChannelRootJson = getRootJson(tmiUrl + channel + chattersUrl);
+            if (myChannelRootJson != null) {
+                JsonObject myChatters = myChannelRootJson.get("chatters").getAsJsonObject();
+                JsonArray myChatModerators = myChatters.get("moderators").getAsJsonArray();
+                JsonArray myChatViewers = myChatters.get("viewers").getAsJsonArray();
+                printOnlineUsers(myChatModerators, channel);
+                printOnlineUsers(myChatViewers, channel);
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+
     public static JsonObject getRootJson(String spec) {
         JsonObject rootJson = null;
         try {
@@ -174,17 +190,6 @@ public class Parser {
             JsonArray chatViewers = chatters.get("viewers").getAsJsonArray();
             printOnlineUser(chatModerators, channelName);
             printOnlineUser(chatViewers, channelName);
-        }
-        for (ChannelUserName channelUserName : ChannelUserName.values()) {
-            String channel = channelUserName.toString();
-            JsonObject myChannelRootJson = getRootJson(tmiUrl + channel + chattersUrl);
-            if (myChannelRootJson != null) {
-                JsonObject myChatters = myChannelRootJson.get("chatters").getAsJsonObject();
-                JsonArray myChatModerators = myChatters.get("moderators").getAsJsonArray();
-                JsonArray myChatViewers = myChatters.get("viewers").getAsJsonArray();
-                printOnlineUsers(myChatModerators, channel);
-                printOnlineUsers(myChatViewers, channel);
-            }
         }
     }
 
