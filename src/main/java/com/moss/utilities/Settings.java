@@ -12,11 +12,13 @@ public class Settings {
     public final static boolean normalMode = true;
     public final static boolean errorMode = false;
     public final static boolean logMode = false;
-    
-    public final static String myChannelName = "";
 
     public enum UserName {
         // users names
+    }
+
+    public enum ChannelUserName {
+        // channel names
     }
 
     // api url list

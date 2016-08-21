@@ -175,13 +175,16 @@ public class Parser {
             printOnlineUser(chatModerators, channelName);
             printOnlineUser(chatViewers, channelName);
         }
-        JsonObject myChannelRootJson = getRootJson(tmiUrl + myChannelName + chattersUrl);
-        if (myChannelRootJson != null) {
-            JsonObject chatters = channelRootJson.get("chatters").getAsJsonObject();
-            JsonArray chatModerators = chatters.get("moderators").getAsJsonArray();
-            JsonArray chatViewers = chatters.get("viewers").getAsJsonArray();
-            printOnlineUser(chatModerators, myChannelName);
-            printOnlineUser(chatViewers, myChannelName);
+        for (ChannelUserName channelUserName : ChannelUserName.values()) {
+            String channel = channelUserName.toString();
+            JsonObject myChannelRootJson = getRootJson(tmiUrl + channel + chattersUrl);
+            if (myChannelRootJson != null) {
+                JsonObject myChatters = myChannelRootJson.get("chatters").getAsJsonObject();
+                JsonArray myChatModerators = myChatters.get("moderators").getAsJsonArray();
+                JsonArray myChatViewers = myChatters.get("viewers").getAsJsonArray();
+                printOnlineUsers(myChatModerators, channel);
+                printOnlineUsers(myChatViewers, channel);
+            }
         }
     }
 
@@ -205,6 +208,25 @@ public class Parser {
                     printOutputToConsole(output);
                 }
             }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+
+    public static void printOnlineUsers(JsonArray chatViewers, String channelName) {
+        for (JsonElement chatViewer : chatViewers) {
+            String chatViewerName = chatViewer.getAsString();
+            String chatViewerOutput = formatString(chatViewerName);
+            String date = DateWatch.getCurrentDate();
+            StringBuilder output = new StringBuilder()
+                        .append("\n Username     : " + chatViewerOutput)
+                        .append("|    Date       : " + date)
+                        .append("     Channel    : " + channelName);
+           if (logMode) {
+               printOutputToFile(output, twitchLogFile);
+           }
+               printOutputToFile(output, logFile);
+               printOutputToConsole(output);
         }
     }
 
