@@ -3,6 +3,7 @@ package com.moss.utilities;
 public class Settings {
 
     // application settings
+    public final static int viewersLimit = 200;
     public final static String logFile = "log.txt";
     public final static String twitchLogFile = "twitchLog.txt";
     public final static String errorFile = "error.log";
