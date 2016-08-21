@@ -175,6 +175,14 @@ public class Parser {
             printOnlineUser(chatModerators, channelName);
             printOnlineUser(chatViewers, channelName);
         }
+        JsonObject myChannelRootJson = getRootJson(tmiUrl + myChannelName + chattersUrl);
+        if (myChannelRootJson != null) {
+            JsonObject chatters = channelRootJson.get("chatters").getAsJsonObject();
+            JsonArray chatModerators = chatters.get("moderators").getAsJsonArray();
+            JsonArray chatViewers = chatters.get("viewers").getAsJsonArray();
+            printOnlineUser(chatModerators, myChannelName);
+            printOnlineUser(chatViewers, myChannelName);
+        }
     }
 
     // --------------------------------------------------------------------------------------------------------------------

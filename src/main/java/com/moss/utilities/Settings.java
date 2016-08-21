@@ -3,7 +3,6 @@ package com.moss.utilities;
 public class Settings {
 
     // application settings
-    public final static int viewersLimit = 250;
     public final static String logFile = "log.txt";
     public final static String twitchLogFile = "twitchLog.txt";
     public final static String errorFile = "error.log";
@@ -12,6 +11,8 @@ public class Settings {
     public final static boolean normalMode = true;
     public final static boolean errorMode = false;
     public final static boolean logMode = false;
+    
+    public final static String myChannelName = "";
 
     public enum UserName {
         // users names
