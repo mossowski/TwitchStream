@@ -39,12 +39,12 @@ public class Parser {
             String updatedAt = rootJson.get("updated_at").getAsString();
             updatedAt = formatDate(updatedAt);
             StringBuilder output = new StringBuilder()
-                    .append("\n id           : " + id)
-                    .append("\n display Name : " + displayName)
-                    .append("\n name         : " + name)
-                    .append("\n bio          : " + bio)
-                    .append("\n created at   : " + createdAt)
-                    .append("\n updated at   : " + updatedAt)
+                    .append("\n id      : " + id)
+                    .append("\n display : " + displayName)
+                    .append("\n name    : " + name)
+                    .append("\n bio     : " + bio)
+                    .append("\n created : " + createdAt)
+                    .append("\n updated : " + updatedAt)
                     .append(printDelimiter(true));
             if (logMode) {
                 printOutputToFile(output, twitchLogFile);
@@ -203,9 +203,9 @@ public class Parser {
                     String chatViewerOutput = formatString(chatViewerName);
                     String date = DateWatch.getCurrentDate();
                     StringBuilder output = new StringBuilder()
-                            .append("\n Username     : " + chatViewerOutput)
-                            .append("|    Date       : " + date)
-                            .append("     Channel    : " + channelName);
+                            .append("\n Username : " + chatViewerOutput)
+                            .append("|  Date     : " + date)
+                            .append("   Channel  : " + channelName);
                     if (logMode) {
                         printOutputToFile(output, twitchLogFile);
                     }
@@ -298,8 +298,8 @@ public class Parser {
     public static String formatString(String string) {
         String result = string;
         int stringLength = string.length();
-        if (stringLength < 20) {
-            int missingSpaces = 20 - stringLength;
+        if (stringLength < 15) {
+            int missingSpaces = 15 - stringLength;
             for (int i = 0; i < missingSpaces; i++) {
                 result += " ";
             }
