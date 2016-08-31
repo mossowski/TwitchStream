@@ -16,3 +16,4 @@ hs_err_pid*
 .settings/*
 log.txt
 twitchLog.txt
+error.log

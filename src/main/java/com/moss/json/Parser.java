@@ -93,8 +93,8 @@ public class Parser {
                     String followChannelNameOutput = formatString(followChannelName);
                     if (logMode) {
                         StringBuilder output = new StringBuilder()
-                                .append("\n Follow       : " + followChannelNameOutput)
-                                .append("|    Date       : " + createdAt);
+                                .append("\n Follow : " + followChannelNameOutput)
+                                .append(" | Date : " + createdAt);
                         printOutputToFile(output, twitchLogFile);
                     }
                     checkChatUsers(followChannelName);
@@ -135,8 +135,8 @@ public class Parser {
             } while (streamsSize != 0 && viewersCount > viewersLimit);
             if (logMode) {
                 StringBuilder output = new StringBuilder()
-                        .append("\n Time         : " + formatString(timeWatch.time()))
-                        .append("|    Date       : " + DateWatch.getCurrentDate())
+                        .append("\n Time : " + formatString(timeWatch.time()))
+                        .append(" | Date : " + DateWatch.getCurrentDate())
                         .append(printDelimiter(true));
                 printOutputToFile(output, twitchLogFile);
             }
@@ -204,8 +204,8 @@ public class Parser {
                     String date = DateWatch.getCurrentDate();
                     StringBuilder output = new StringBuilder()
                             .append("\n Username : " + chatViewerOutput)
-                            .append("|  Date     : " + date)
-                            .append("   Channel  : " + channelName);
+                            .append(" | Date : " + date)
+                            .append(" | Channel : " + channelName);
                     if (logMode) {
                         printOutputToFile(output, twitchLogFile);
                     }
@@ -224,9 +224,9 @@ public class Parser {
             String chatViewerOutput = formatString(chatViewerName);
             String date = DateWatch.getCurrentDate();
             StringBuilder output = new StringBuilder()
-                        .append("\n Username     : " + chatViewerOutput)
-                        .append("|    Date       : " + date)
-                        .append("     Channel    : " + channelName);
+                        .append("\n Username : " + chatViewerOutput)
+                        .append(" | Date : " + date)
+                        .append(" | Channel : " + channelName);
            if (logMode) {
                printOutputToFile(output, twitchLogFile);
            }
