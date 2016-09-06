@@ -1,11 +1,8 @@
 package com.moss.json;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import com.google.gson.JsonArray;
@@ -17,6 +14,9 @@ import com.moss.utilities.Settings.UserName;
 import com.moss.utilities.TimeWatch;
 
 import static com.moss.utilities.Settings.*;
+
+import static com.moss.json.Printer.*;
+
 
 public class Parser {
 
@@ -46,9 +46,7 @@ public class Parser {
                     .append("\n created : " + createdAt)
                     .append("\n updated : " + updatedAt)
                     .append(printDelimiter(true));
-            if (logMode) {
-                printOutputToFile(output, twitchLogFile);
-            }
+            printOutputToFile(output, twitchLogFile);
             printOutputToConsole(output);
         }
     }
@@ -64,8 +62,8 @@ public class Parser {
                     .append(printDelimiter(false))
                     .append(printDate())
                     .append(printDelimiter(false))
-                    .append("\n Channels     : " + channels)
-                    .append("\n Viewers      : " + viewers)
+                    .append("\n Channels : " + channels)
+                    .append("\n Viewers  : " + viewers)
                     .append(printDelimiter(true));
             printOutputToFile(output, twitchLogFile);
         }
@@ -153,8 +151,8 @@ public class Parser {
                 JsonObject myChatters = myChannelRootJson.get("chatters").getAsJsonObject();
                 JsonArray myChatModerators = myChatters.get("moderators").getAsJsonArray();
                 JsonArray myChatViewers = myChatters.get("viewers").getAsJsonArray();
-                printOnlineUsers(myChatModerators, channel);
-                printOnlineUsers(myChatViewers, channel);
+                printChannelUsers(myChatModerators, channel);
+                printChannelUsers(myChatViewers, channel);
             }
         }
     }
@@ -193,118 +191,6 @@ public class Parser {
         }
     }
 
-    // --------------------------------------------------------------------------------------------------------------------
 
-    public static void printOnlineUser(JsonArray chatViewers, String channelName) {
-        for (JsonElement chatViewer : chatViewers) {
-            String chatViewerName = chatViewer.getAsString();
-            for (UserName userName : UserName.values()) {
-                if (chatViewerName.equals(userName.toString())) {
-                    String chatViewerOutput = formatString(chatViewerName);
-                    String date = DateWatch.getCurrentDate();
-                    StringBuilder output = new StringBuilder()
-                            .append("\n Username : " + chatViewerOutput)
-                            .append(" | Date : " + date)
-                            .append(" | Channel : " + channelName);
-                    if (logMode) {
-                        printOutputToFile(output, twitchLogFile);
-                    }
-                    printOutputToFile(output, logFile);
-                    printOutputToConsole(output);
-                }
-            }
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------------------------------
-
-    public static void printOnlineUsers(JsonArray chatViewers, String channelName) {
-        for (JsonElement chatViewer : chatViewers) {
-            String chatViewerName = chatViewer.getAsString();
-            String chatViewerOutput = formatString(chatViewerName);
-            String date = DateWatch.getCurrentDate();
-            StringBuilder output = new StringBuilder()
-                        .append("\n Username : " + chatViewerOutput)
-                        .append(" | Date : " + date)
-                        .append(" | Channel : " + channelName);
-           if (logMode) {
-               printOutputToFile(output, twitchLogFile);
-           }
-               printOutputToFile(output, logFile);
-               printOutputToConsole(output);
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------------------------------
-
-    public static void printOutputToFile(StringBuilder output, String fileName) {
-        try (FileWriter fileWriter = new FileWriter(fileName, true);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.print(output);
-        } catch (IOException e) {
-            if (errorMode) {
-                StringBuilder errorOutput = new StringBuilder()
-                        .append(e.getMessage());
-                printOutputToFile(errorOutput, errorFile);
-            }
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------------------------------
-
-    public static void printOutputToConsole(StringBuilder output) {
-        System.out.println(output);
-    }
-
-    // --------------------------------------------------------------------------------------------------------------------
-
-    public static StringBuilder printDelimiter(boolean isDefault) {
-        StringBuilder delimiter = new StringBuilder("\n");
-        for (int i = 0; i < delimiterSize; i++) {
-            if (isDefault)
-                delimiter.append("-");
-            else
-                delimiter.append("=");
-        }
-        return delimiter;
-    }
-
-    // --------------------------------------------------------------------------------------------------------------------
-
-    public static String printDate() {
-        String date = " " + DateWatch.getCurrentDate() + " ";
-        StringBuilder result = new StringBuilder("\n");
-        int delimiter = (delimiterSize - date.length()) / 2;
-        for (int i = 0; i < delimiter; i++) {
-            result.append("=");
-        }
-        result.append(date);
-        for (int i = 0; i < delimiter; i++) {
-            result.append("=");
-        }
-        return result.toString();
-    }
-
-    // --------------------------------------------------------------------------------------------------------------------
-
-    public static String formatDate(String date) {
-        String result = date.replace("T", " ").replace("Z", "");
-        return result;
-    }
-
-    // --------------------------------------------------------------------------------------------------------------------
-
-    public static String formatString(String string) {
-        String result = string;
-        int stringLength = string.length();
-        if (stringLength < 15) {
-            int missingSpaces = 15 - stringLength;
-            for (int i = 0; i < missingSpaces; i++) {
-                result += " ";
-            }
-        }
-        return result;
-    }
 
 }

@@ -7,7 +7,6 @@ public class App {
     public static void main(String[] args) {
         Parser.importSummary();
         Parser.importUsers();
-        Parser.importChannels();
 
         while (true) {
             Parser.importFollows();
