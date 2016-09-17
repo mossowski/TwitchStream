@@ -32,5 +32,7 @@ public class Settings {
     // tmi url list
     public final static String tmiUrl = "https://tmi.twitch.tv/group/user/";
     public final static String chattersUrl = "/chatters";
+    // client id
+    public final static String clientId = "";
 
 }

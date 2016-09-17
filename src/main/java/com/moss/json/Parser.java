@@ -164,6 +164,7 @@ public class Parser {
         try {
             URL url = new URL(spec);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.setRequestProperty("Client-ID", clientId);
             request.connect();
             JsonElement root = jsonParser.parse(new InputStreamReader((InputStream) request.getContent()));
             rootJson = root.getAsJsonObject();
