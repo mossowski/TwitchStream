@@ -3,13 +3,14 @@ package com.moss.utilities;
 public class Settings {
 
     // application settings
-    public final static int viewersLimit = 500;
+    public final static int viewersLimit = 100;
     public final static String logFile = "log.txt";
     public final static String twitchLogFile = "twitchLog.txt";
     public final static String errorFile = "error.log";
     public final static int delimiterSize = 75;
     public final static int stringSize = 15;
 
+    public final static boolean allFollowMode = true;
     public final static boolean normalMode = true;
     public final static boolean errorMode = false;
     public final static boolean logMode = false;
@@ -19,7 +20,11 @@ public class Settings {
     }
 
     public enum ChannelUserName {
-        // channel names
+        // channel user names
+    }
+    
+    public enum FollowUserName {
+        // follow user names
     }
 
     // api url list

@@ -159,6 +159,41 @@ public class Parser {
 
     // --------------------------------------------------------------------------------------------------------------------
 
+    public static void importAllFollows() {
+        for (FollowUserName followUserName : FollowUserName.values()) {
+            JsonObject rootJson = getRootJson(userUrl + followUserName + followsUrl);
+            if (rootJson != null) {
+                JsonArray follows = rootJson.get("follows").getAsJsonArray();
+                if (logMode) {
+                    StringBuilder out = new StringBuilder()
+                            .append("\n\t\t\t\t\t\t" + followUserName)
+                            .append("\n");
+                    printOutputToFile(out, twitchLogFile);
+                }
+                for (JsonElement f : follows) {
+                    JsonObject follow = f.getAsJsonObject();
+                    String createdAt = follow.get("created_at").getAsString();
+                    createdAt = formatDate(createdAt);
+                    JsonObject followChannel = follow.get("channel").getAsJsonObject();
+                    String followChannelName = followChannel.get("name").getAsString();
+                    String followChannelNameOutput = formatString(followChannelName);
+                    if (logMode) {
+                        StringBuilder output = new StringBuilder()
+                                .append("\n Follow : " + followChannelNameOutput)
+                                .append(" | Date : " + createdAt);
+                        printOutputToFile(output, twitchLogFile);
+                    }
+                    checkChatUsers(followChannelName);
+                }
+                if (logMode) {
+                    printOutputToFile(printDelimiter(true), twitchLogFile);
+                }
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+
     public static JsonObject getRootJson(String spec) {
         JsonObject rootJson = null;
         try {

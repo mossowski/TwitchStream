@@ -1,5 +1,8 @@
 package com.moss;
 
+import static com.moss.utilities.Settings.allFollowMode;
+import static com.moss.utilities.Settings.normalMode;
+
 import com.moss.json.Parser;
 
 public class App {
@@ -9,9 +12,16 @@ public class App {
         Parser.importUsers();
 
         while (true) {
-            Parser.importFollows();
             Parser.importChannels();
-            Parser.importStreams();
+            if (allFollowMode) {
+                Parser.importAllFollows();
+            }
+            else {
+                Parser.importFollows();
+            }
+            if (normalMode) {
+                Parser.importStreams();
+            }
         }
     }
 
